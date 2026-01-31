@@ -1,19 +1,21 @@
 import Image from "next/image";
-import Clock from "./components/Clock";
 import { Suspense } from "react";
+import { getPreviews } from "./lib/preview";
 import PreviewBlock from "./components/PreviewBlock";
+// import MyClock from "./components/MyClock";
 
 
-export default function Home() {
+export default async function Home() {
+  const previews = await getPreviews();
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Clock/>
-        <Suspense fallback={<p>Generating Visual Preview...</p>}>
-      <PreviewBlock title="Preview 1" description="First Preview Generated"/>
-      <PreviewBlock title="Preview 2" description="Second Preview Generated"/>
-      <PreviewBlock title="Preview 3" description="Third Preview Generated"/>
-      </Suspense>
+        {/* <MyClock/> */}
+        {previews.map((preview, index) => (
+           <Suspense key={preview.id} fallback={<p>Generating Visual Preview {index + 1}...</p>}>
+            <PreviewBlock title={preview.title} description={preview.description} />
+            </Suspense>
+        )  )}
         <Image
           className="dark:invert"
           src="/next.svg"
